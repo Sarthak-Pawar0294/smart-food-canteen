@@ -19,7 +19,7 @@ const pool = new Pool({
 const OWNER_EMAIL = 'canteen@vit.edu';
 
 // Login endpoint
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const emailRegex = /^[a-zA-Z]+\.[0-9]+@vit\.edu$/;
@@ -45,7 +45,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Create order endpoint
-app.post('/orders', async (req, res) => {
+app.post('/api/orders', async (req, res) => {
   try {
     const { userId, items, total, paymentMethod, paymentStatus } = req.body;
     if (!userId || !items || !total) {
@@ -84,7 +84,7 @@ app.post('/orders', async (req, res) => {
 });
 
 // Get ALL orders endpoint - MUST BE BEFORE :userId route
-app.get('/orders/all', async (req, res) => {
+app.get('/api/orders/all', async (req, res) => {
   try {
     const ownerEmail = req.headers['x-owner-email'];
     if (ownerEmail !== OWNER_EMAIL) {
@@ -99,7 +99,7 @@ app.get('/orders/all', async (req, res) => {
 });
 
 // Get user's orders endpoint - AFTER /all route
-app.get('/orders/:userId', async (req, res) => {
+app.get('/api/orders/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     const result = await pool.query('SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
@@ -111,7 +111,7 @@ app.get('/orders/:userId', async (req, res) => {
 });
 
 // Update order status endpoint
-app.patch('/orders/:orderId', async (req, res) => {
+app.patch('/api/orders/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
     const { status } = req.body;
@@ -134,7 +134,7 @@ app.patch('/orders/:orderId', async (req, res) => {
 });
 
 // Health check
-app.get('/healthz', (req, res) => {
+app.get('/api/healthz', (req, res) => {
   res.json({ status: 'ok', message: 'API running' });
 });
 
