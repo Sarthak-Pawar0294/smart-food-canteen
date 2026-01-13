@@ -1,26 +1,4 @@
-/*
-  # Smart Food Canteen Database Schema
 
-  1. New Tables
-    - `users`
-      - `id` (uuid, primary key) - Auto-generated user ID
-      - `email` (text, unique) - College email (firstname.PRN@vit.edu format)
-      - `prn_hash` (text) - Hashed PRN number for password validation
-      - `created_at` (timestamptz) - Account creation timestamp
-    
-    - `orders`
-      - `id` (uuid, primary key) - Auto-generated order ID
-      - `user_id` (uuid, foreign key) - References users table
-      - `items` (jsonb) - Order items as JSON array
-      - `total` (decimal) - Total order amount
-      - `status` (text) - Order status (pending, completed, cancelled)
-      - `created_at` (timestamptz) - Order creation timestamp
-
-  2. Security
-    - Enable RLS on both tables
-    - Users can only read their own data
-    - Users can create their own orders
-    - Users can only view their own orders
 */
 
 -- Create users table
@@ -66,13 +44,3 @@ CREATE POLICY "Users can create own orders"
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-
--- Insert sample users for testing
--- PRN: 12345 (password), email: john.12345@vit.edu
--- PRN: 67890 (password), email: sarah.67890@vit.edu
--- Note: In production, these would be properly hashed
-INSERT INTO users (email, prn_hash) VALUES
-  ('john.12345@vit.edu', '12345'),
-  ('sarah.67890@vit.edu', '67890'),
-  ('mike.11111@vit.edu', '11111')
-ON CONFLICT (email) DO NOTHING;
